@@ -2,12 +2,15 @@ package com.lean.jpahibernate;
 
 import com.lean.jpahibernate.helloWorld.entity.Person;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 @SpringBootApplication
 public class JpaHibernateApplication implements CommandLineRunner {
@@ -19,17 +22,25 @@ public class JpaHibernateApplication implements CommandLineRunner {
 	@Autowired
 	private EntityManager entityManager;
 
+	@Autowired
+	private SessionFactory sessionFactory;
+
 	@Override
 	public void run(String... args) throws Exception {
-		Session session = (Session) entityManager.getDelegate();
+		Session session = sessionFactory.openSession();
 
-		session.beginTransaction();  //start transaction - connected to DB
+		Transaction transaction = session.getTransaction();  //initial transaction
 
-		Person person = new Person("Test first", "Test last", 18, "test address");
+		transaction.begin();  //start transaction - connected to DB
 
-		session.save(person);   // to persistent state
+		Person person = session.get(Person.class, 10);  //get person with id=10
+		person.setFirstName("test first update");
+		person.setLastName("test last update");
 
-		session.getTransaction().commit();  //save to DB
+//		session.delete(person);  //remove person from persistent state
+		session.save(person);   // to persistent state (update person on persistent state)
+
+		transaction.commit();  //commit to DB
 
 		session.close();
 	}
