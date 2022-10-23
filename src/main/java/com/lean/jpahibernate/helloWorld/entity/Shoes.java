@@ -24,7 +24,7 @@ public class Shoes {
     @Column(name = "color")
     private String color;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST})  //PERSIST: Before Shoes saved to persist, Person also saved
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     @JoinColumn(name = "person_id")
     private Person person;
 

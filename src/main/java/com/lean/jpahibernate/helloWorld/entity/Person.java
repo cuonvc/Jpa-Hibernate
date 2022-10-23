@@ -30,7 +30,7 @@ public class Person {
     @Column(name = "age")
     private Integer age;
 
-    @OneToMany(mappedBy = "person", cascade = {CascadeType.REMOVE})  //Before remove Person, Shoes also removed
+    @OneToMany(mappedBy = "person", orphanRemoval = true)  //
     private Set<Shoes> shoesSet = new HashSet<>();
 
 }

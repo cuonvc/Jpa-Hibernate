@@ -38,28 +38,19 @@ public class JpaHibernateApplication implements CommandLineRunner {
 //		Person person = new Person();
 //		person.setAge(18);
 //		person.setFirstName("Cuong 1");
-//
-//		Person person = session.get(Person.class, 3);
+
+//		Person person = session.get(Person.class, 4);
 //		Shoes shoes = new Shoes();
 //		shoes.setHeight(11.2f);
 //		shoes.setColor("red");
 //		shoes.setPerson(person);
-////
+//
 //		session.persist(shoes);  //save Person and Shoes to persistent status
 
-
-		//case 1:
-//		Shoes shoes = session.get(Shoes.class, 3);
-//		session.delete(shoes);  //error if CascadeType.REMOVE apply for Shoes(many side): because Shoes~Person are constrains n~1, only remove when constrains is 1~n
-		//solution: shoes.setPerson(null) -> delete ok
-
 		//case 2:
-//		Shoes shoes = session.get(Shoes.class, 3);
-//		session.delete(shoes);  //success if CascadeType.REMOVE apply for Person(one side)
-
-		//case 2:
-		Person person = session.get(Person.class, 2);
-		session.delete(person);  //success because CascadeType.REMOVE apply for Person(one side)
+		Shoes shoes = session.get(Shoes.class, 7);
+		session.delete(shoes);  //success if CascadeType.REMOVE apply for Shoes(many side) and orphanRemove apply for Person(one side)
+		//logic SQL: deleted Shoes (id = 5) -> deleted all remaining Shoes (person_id = Shoes(id=5)) -> deleted Person
 
 		transaction.commit();
 		session.close();
