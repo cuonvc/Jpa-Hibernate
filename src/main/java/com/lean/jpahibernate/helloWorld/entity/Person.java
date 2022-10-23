@@ -23,10 +23,19 @@ public class Person {
     @Column(name = "age")
     private Integer age;
 
-    @Column(name = "address")
-    private String address;
+    @Embedded
+    //default (not have @AttributeOverrides: auto select to @Column in Address class)
+    private Address homeAddress;  //component class (belong to Person entity)
 
-    public Person(String test_first, String test_last, int i, String test_address) {
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "street", column = @Column(name = "billing_street")),
+            @AttributeOverride(name = "city", column = @Column(name = "billing_city")),
+            @AttributeOverride(name = "zipcode", column = @Column(name = "billing_zipcode"))
+    })
+    private Address billingAddress;  //component class (belong to Person entity)
 
-    }
+
+    //table after generated: id | first_name | last_name | age | home_street | home_city | home_zipcode | billing_street | billing_city | billing_zipcode
+
 }
