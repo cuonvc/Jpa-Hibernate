@@ -1,7 +1,7 @@
 package com.lean.jpahibernate;
 
-import com.lean.jpahibernate.helloWorld.entity.Address;
 import com.lean.jpahibernate.helloWorld.entity.Person;
+import com.lean.jpahibernate.helloWorld.entity.Shoes;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -11,7 +11,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootApplication
 public class JpaHibernateApplication implements CommandLineRunner {
@@ -34,21 +35,32 @@ public class JpaHibernateApplication implements CommandLineRunner {
 
 //		transaction.begin();
 
-		Address homeAddress = new Address();
-		homeAddress.setStreet("new street 1");
-		homeAddress.setCity("new city 1");
+//		Person person = new Person();
+//		person.setAge(18);
+//		person.setFirstName("Cuong 1");
+//
+//		Person person = session.get(Person.class, 3);
+//		Shoes shoes = new Shoes();
+//		shoes.setHeight(11.2f);
+//		shoes.setColor("red");
+//		shoes.setPerson(person);
+////
+//		session.persist(shoes);  //save Person and Shoes to persistent status
 
-		Address billingAddress = new Address();
-		billingAddress.setStreet("new billing street");
-		billingAddress.setCity("new billing city");
 
-		Person person = new Person();
-		person.setAge(18);
-		person.setFirstName("Cuong 1");
-		person.setHomeAddress(homeAddress);
-		person.setBillingAddress(billingAddress);
+		//case 1:
+//		Shoes shoes = session.get(Shoes.class, 3);
+//		session.delete(shoes);  //error if CascadeType.REMOVE apply for Shoes(many side): because Shoes~Person are constrains n~1, only remove when constrains is 1~n
+		//solution: shoes.setPerson(null) -> delete ok
 
-		session.save(person);
+		//case 2:
+//		Shoes shoes = session.get(Shoes.class, 3);
+//		session.delete(shoes);  //success if CascadeType.REMOVE apply for Person(one side)
+
+		//case 2:
+		Person person = session.get(Person.class, 2);
+		session.delete(person);  //success because CascadeType.REMOVE apply for Person(one side)
+
 		transaction.commit();
 		session.close();
 	}

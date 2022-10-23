@@ -3,9 +3,16 @@ package com.lean.jpahibernate.helloWorld.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-@Data
+//@Data
+@Getter
+@Setter
+@AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "person")
 public class Person {
@@ -23,19 +30,7 @@ public class Person {
     @Column(name = "age")
     private Integer age;
 
-    @Embedded
-    //default (not have @AttributeOverrides: auto select to @Column in Address class)
-    private Address homeAddress;  //component class (belong to Person entity)
-
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "street", column = @Column(name = "billing_street")),
-            @AttributeOverride(name = "city", column = @Column(name = "billing_city")),
-            @AttributeOverride(name = "zipcode", column = @Column(name = "billing_zipcode"))
-    })
-    private Address billingAddress;  //component class (belong to Person entity)
-
-
-    //table after generated: id | first_name | last_name | age | home_street | home_city | home_zipcode | billing_street | billing_city | billing_zipcode
+    @OneToMany(mappedBy = "person", cascade = {CascadeType.REMOVE})  //Before remove Person, Shoes also removed
+    private Set<Shoes> shoesSet = new HashSet<>();
 
 }
