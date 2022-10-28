@@ -1,7 +1,7 @@
 package com.lean.jpahibernate;
 
-import com.lean.jpahibernate.helloWorld.entity.Employee;
-import com.lean.jpahibernate.helloWorld.entity.EmployeeStatus;
+import com.lean.jpahibernate.helloWorld.entity.Address;
+import com.lean.jpahibernate.helloWorld.entity.Person;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -11,6 +11,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.persistence.EntityManager;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @SpringBootApplication
 public class JpaHibernateApplication implements CommandLineRunner {
@@ -31,21 +34,30 @@ public class JpaHibernateApplication implements CommandLineRunner {
 		Session session = sessionFactory.openSession();
 		Transaction transaction = session.beginTransaction();
 
-		Employee employee = new Employee();
-		employee.setEmployeeId("1231mkmesda");
-		employee.setName("Test");
-		employee.setEmployeeStatus(EmployeeStatus.PART_TIME);
+		Collection<String> collection = new ArrayList<>();
+		collection.add("first nickname");
+		collection.add("second nickname");
 
-		Employee employee1 = new Employee();
-		employee1.setEmployeeId("12njkn2242");
-		employee1.setName("demo");
-		employee1.setEmployeeStatus(EmployeeStatus.FULL_TIME);
+		Person person = new Person();
+		person.setName("Name test");
+		person.setEmail("email test");
+		person.setNicknames(collection);
 
-		session.save(employee);
-		session.save(employee1);
+		Address address = new Address();
+		address.setZipcode("1001");
+		address.setStreet("new street");
+		address.setCity("new city");
 
+		Address address1 = new Address();
+		address1.setZipcode("1231");
+		address1.setStreet("new Street");
+		address1.setCity("city test");
+
+		person.getAddresses().add(address);
+		person.getAddresses().add(address1);
+
+		session.persist(person);
 		transaction.commit();
 		session.close();
-
 	}
 }
