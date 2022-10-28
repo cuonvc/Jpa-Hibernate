@@ -1,7 +1,8 @@
 package com.lean.jpahibernate;
 
-import com.lean.jpahibernate.helloWorld.entity.Address;
-import com.lean.jpahibernate.helloWorld.entity.Person;
+import com.lean.jpahibernate.helloWorld.entity.Child;
+import com.lean.jpahibernate.helloWorld.entity.Parent;
+import com.lean.jpahibernate.helloWorld.entity.ParentPrimaryKey;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -11,9 +12,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.persistence.EntityManager;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 @SpringBootApplication
 public class JpaHibernateApplication implements CommandLineRunner {
@@ -32,31 +34,29 @@ public class JpaHibernateApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		Session session = sessionFactory.openSession();
-		Transaction transaction = session.beginTransaction();
+		Transaction transaction = session.getTransaction();
+		transaction.begin();
 
-		Collection<String> collection = new ArrayList<>();
-		collection.add("first nickname");
-		collection.add("second nickname");
+		ParentPrimaryKey parentPrimaryKey = new ParentPrimaryKey();
+		parentPrimaryKey.setFirstname("Test firstname");
+		parentPrimaryKey.setLastname("Test lastname");
 
-		Person person = new Person();
-		person.setName("Name test");
-		person.setEmail("email test");
-		person.setNicknames(collection);
+		Parent parent = new Parent();
+		parent.setParentPrimaryKey(parentPrimaryKey);
 
-		Address address = new Address();
-		address.setZipcode("1001");
-		address.setStreet("new street");
-		address.setCity("new city");
+		Child child = new Child();
+		child.setName("Test name");
+		Child child1 = new Child();
+		child1.setName("TRest 2");
 
-		Address address1 = new Address();
-		address1.setZipcode("1231");
-		address1.setStreet("new Street");
-		address1.setCity("city test");
 
-		person.getAddresses().add(address);
-		person.getAddresses().add(address1);
+		Set<Child> children = new HashSet<>();
+		children.add(child);
+		children.add(child1);
 
-		session.persist(person);
+		parent.setChildren(children);
+
+		session.persist(parent);
 		transaction.commit();
 		session.close();
 	}
